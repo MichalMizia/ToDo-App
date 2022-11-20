@@ -38,10 +38,10 @@ function renderLists(){
             title.setAttribute('data-list-name', currentList)
             title.textContent = currentList
             const editBtn = document.createElement('img')
-            editBtn.setAttribute("src", "./edit_icon.svg")
+            editBtn.setAttribute("src", "./images/edit_icon.svg")
             editBtn.setAttribute("alt", "edit list name")
             const delBtn = document.createElement('img')
-            delBtn.setAttribute("src", "./trash.svg")
+            delBtn.setAttribute("src", "./images/trash.svg")
             delBtn.setAttribute("alt", "delete list")
 
             const btnContainer = document.createElement('div')
