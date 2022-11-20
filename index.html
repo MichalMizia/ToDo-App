@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+    <script src="script.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+  
+        <div class="container">
+            <button class="clear-complete" data-clear-complete>Clear Complete Tasks</button>
+
+            <div class="todo-list-container">
+
+                <div class="finished-tasks-container" data-finished-container>
+                    <div class="finished-title title">Finished tasks</div>
+                    <ul role="list" class="finished-todos todos" data-finished-tasks-list>
+
+                    </ul>
+                </div>
+
+                <div class="unfinished-tasks-container" data-unfinished-container>
+                    <div class="unfinished-title title">Unfinished tasks</div>
+                    <ul role="list" class="unfinished-todos todos" data-unfinished-tasks-list>
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="lists-container">
+
+                <div class="lists-box">
+                    <div class="list-header">
+                        <h3 data-list-title>Select a list</h3>
+                        <p data-tasks-remaining>0 tasks remaining</p>
+                    </div>
+
+                    <ul class="list-of-lists" data-lists>
+                        
+                    </ul>
+
+                </div>
+                
+                <div class="forms-container">
+                    <form data-add-todo-form class="add-todo-form" action="">
+                        <input data-add-todo-input class="add-todo-input" type="text" placeholder="Add a task">
+                        <button type="submit">+</button>
+                    </form>
+
+                    <form data-add-list-form class="add-list-form" action="">
+                        <input data-add-list-input class="add-list-input" type="text" placeholder="Add a list">
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="edit-list-name hide" data-edit-list-box>
+            <p>Edit the list name</p>
+            <form action="">
+                <input type="text">
+                <button type="submit" data-confirm-btn>Confirm</button>
+                <button type="submit" data-cancel-btn>Cancel</button>
+            </form>
+        </div>
+
+    </ul>
+</body>
+</html>
