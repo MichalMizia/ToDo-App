@@ -1,4 +1,3 @@
-// localStorage.clear()
 const list_key = '_LOCAL_STORAGE_LIST_KEY'
 const current_list_key = '_LOCAL_STORAGE_CURRENT_KEY'
 
@@ -18,18 +17,22 @@ const listOfLists = document.querySelector('[data-lists]')
 const finishedTasksList = document.querySelector('[data-finished-tasks-list]')
 const unfinishedTasksList = document.querySelector('[data-unfinished-tasks-list]')
 let lists = JSON.parse(localStorage.getItem(list_key)) || []
-let currentListName = localStorage.getItem(current_list_key) || undefined
+let currentListName = localStorage.getItem(current_list_key) || null
 
 
 function renderLists(){
-        if(currentListName === undefined || currentListName === null) return
-        window.localStorage.setItem(current_list_key, currentListName)
+        if(currentListName != null){
+            window.localStorage.setItem(current_list_key, currentListName)
+        }
+        //func that renders the list title and how many tasks are remaining
         titleAndTasksRemaining()
 
+        //removing all lists
         listOfLists.innerHTML = ''
         if(lists.length === 0) return;
         window.localStorage.setItem(list_key, JSON.stringify(lists))
 
+        //then readding each list element with all needed html into lists container which was cleared previously
         lists.forEach(list =>{
             const currentList = list.name
             const li = document.createElement('li')
@@ -37,6 +40,7 @@ function renderLists(){
             const title = document.createElement('h3')
             title.setAttribute('data-list-name', currentList)
             title.textContent = currentList
+            //adding the interactivity to each list
             const editBtn = document.createElement('img')
             editBtn.setAttribute("src", "images/edit_icon.svg")
             editBtn.setAttribute("alt", "edit list name")
@@ -44,26 +48,34 @@ function renderLists(){
             delBtn.setAttribute("src", "images/trash.svg")
             delBtn.setAttribute("alt", "delete list")
 
+            //btn container is used for styling
             const btnContainer = document.createElement('div')
             btnContainer.appendChild(editBtn)
             btnContainer.appendChild(delBtn)
             li.appendChild(title)
             li.appendChild(btnContainer)
 
-            if(list.name === currentListName) li.classList.add('active')
-
+            //currentListName is a global variable
+            if(list.name === currentListName){
+                li.classList.add('active')
+            }
+            
+            //finally appending the list to DOM
             listOfLists.appendChild(li)
+            //and adding event listeners to buttons in each list
             delBtn.addEventListener('click', (e)=>{
                 e.preventDefault()
                 const index = lists.findIndex(list => list.name === currentList)
+
                 if(currentListName === lists[index].name){
                     unfinishedTasksList.innerHTML = ''
                     finishedTasksList.innerHTML = ''
+                    window.localStorage.setItem(current_list_key, null)
+                    currentListName = null
                 }
 
                 lists = lists.filter(list => list.name !== currentList)
                 renderLists()
-                
             })
             editBtn.addEventListener('click', (e)=>{
                 e.preventDefault()
@@ -89,7 +101,6 @@ function renderLists(){
 
 function save(){
     window.localStorage.setItem(list_key, JSON.stringify(lists))
-    if(currentListName === undefined || currentListName === null) return
     window.localStorage.setItem(current_list_key, currentListName)
 }
 
@@ -102,6 +113,7 @@ addListForm.addEventListener('submit', (e)=>{
             tasks: []
         }
     )
+    if(lists.length === 1) currentListName = addListInput.value
     addListInput.value = ''
     renderLists()
 })
@@ -111,35 +123,41 @@ listOfLists.addEventListener('click', (e)=>{
     currentListName = e.target.getAttribute('data-list-name')
     window.localStorage.setItem(current_list_key, currentListName)
     renderLists()
-    renderTasks(currentListName)
+    renderTasks()
 })
 
-function renderTasks(currentListName){
-    const index = lists.findIndex(list => list.name === currentListName)
-
-    unfinishedTasksList.innerHTML = ''
-    finishedTasksList.innerHTML = ''
-    if(lists[index].tasks.length === 0) return
-    lists[index].tasks.forEach(task =>{
-        const li = document.createElement('li')
-        li.classList.add('todo')
-        li.setAttribute('draggable', 'true')
-        li.textContent = task.taskName
-
-        li.addEventListener('dragstart', ()=>{
-            li.classList.add('dragging')
+function renderTasks(){
+    if(currentListName == null){
+        unfinishedTasksList.innerHTML = ""
+        finishedTasksList.innerHTML = ""
+        return
+    }else{
+        const index = lists.findIndex(list => list.name === currentListName)
+    
+        unfinishedTasksList.innerHTML = ''
+        finishedTasksList.innerHTML = ''
+        if(lists[index].tasks.length === 0) return
+        lists[index].tasks.forEach(task =>{
+            const li = document.createElement('li')
+            li.classList.add('todo')
+            li.setAttribute('draggable', 'true')
+            li.textContent = task.taskName
+    
+            li.addEventListener('dragstart', ()=>{
+                li.classList.add('dragging')
+            })
+            li.addEventListener('dragend', ()=>{
+                li.classList.remove('dragging')
+            })
+    
+            if(task.complete === true){
+                finishedTasksList.appendChild(li)
+            }else{
+                unfinishedTasksList.appendChild(li)
+            }
+    
         })
-        li.addEventListener('dragend', ()=>{
-            li.classList.remove('dragging')
-        })
-
-        if(task.complete === true){
-            finishedTasksList.appendChild(li)
-        }else{
-            unfinishedTasksList.appendChild(li)
-        }
-
-    })
+    }
 }
 
 
@@ -177,7 +195,7 @@ addToDoForm.addEventListener('submit', (e)=>{
     )
     save()
     titleAndTasksRemaining()
-    renderTasks(currentListName)
+    renderTasks()
     addToDoInput.value = ''
 })
 
@@ -186,7 +204,7 @@ clearComplete.addEventListener('click', ()=>{
     const index = lists.findIndex(list => list.name === currentListName)
     lists[index].tasks = lists[index].tasks.filter(task => task.complete === false)
     save()
-    renderTasks(currentListName)
+    renderTasks()
 })
 
 function titleAndTasksRemaining(){
@@ -207,5 +225,5 @@ function titleAndTasksRemaining(){
 
 renderLists()
 if(currentListName !== null && currentListName !== undefined){
-    renderTasks(currentListName)
+    renderTasks()
 }
